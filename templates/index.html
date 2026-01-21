@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Car Valuator</h1>
+        <p class="subtitle">Enter car details to get an instant market estimate.</p>
+
+        <form method="post" action="/predict">
+            <div class="input-group">
+                <label for="company">Company</label>
+                <select name="company" id="company" required>
+                    <option value="" disabled {% if not selected_company %}selected{% endif %}>Select Company</option>
+                    {% for company in companies %}
+                        <option value="{{ company }}" {% if company == selected_company %}selected{% endif %}>{{ company }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="name">Car Model</label>
+                <select name="name" id="name" required>
+                    <option value="" disabled {% if not selected_name %}selected{% endif %}>Select Model</option>
+                    {% for model in car_models %}
+                        <option value="{{ model }}" {% if model == selected_name %}selected{% endif %}>{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="year">Year</label>
+                <select name="year" id="year" required>
+                    <option value="" disabled {% if not selected_year %}selected{% endif %}>Select Year</option>
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if y|string == selected_year|string %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="fuel_type">Fuel Type</label>
+                <select name="fuel_type" required>
+                    <option value="" disabled {% if not selected_fuel_type %}selected{% endif %}>Select Fuel</option>
+                    {% for fuel in fuel_types %} 
+                        <option value="{{ fuel }}" {% if fuel == selected_fuel_type %}selected{% endif %}>{{ fuel }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="kms_driven">Kilometers Driven</label>
+                <input type="number" name="kms_driven" id="kms_driven" placeholder="e.g. 50000" required min="0" 
+                    value="{{ selected_kms_driven if selected_kms_driven is not none else '' }}" />
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Check Valuation</button>
+                <a href="/" class="btn-reset">Reset</a>
+            </div>
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                {% if prediction is string and prediction.startswith('Error') %}
+                    <span style="color: #dc2626; font-size: 14px;">{{ prediction }}</span>
+                {% else %}
+                    <div class="result-label">Estimated Value</div>
+                    <div class="result-price">₹ {{ prediction }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+make sure to install these 
+flask
+pandas
+numpy
+scikit-learn
